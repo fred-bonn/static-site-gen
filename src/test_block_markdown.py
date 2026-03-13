@@ -1,5 +1,5 @@
 import unittest
-from block_markdown import markdown_to_blocks
+from block_markdown import markdown_to_blocks, BlockType, block_to_block_type
 
 class TestSplitBlocks(unittest.TestCase):
     def test_single_block_no_delimiters(self):
@@ -81,6 +81,36 @@ This is the same paragraph on a new line
             "- This is a list\n- with items",
             ],
         )
+
+class TestBlockToBlockType(unittest.TestCase):
+    def test_header_block(self):
+        self.assertEqual(block_to_block_type("# Heading"), BlockType.HEADING)
+        self.assertEqual(block_to_block_type("## Heading"), BlockType.HEADING)
+        self.assertEqual(block_to_block_type("### Heading"), BlockType.HEADING)
+        self.assertEqual(block_to_block_type("###Heading"), BlockType.PARAGRAPH)
+
+    def test_code_block(self):
+        self.assertEqual(block_to_block_type("```\ncode\n```"), BlockType.CODE)
+        self.assertEqual(block_to_block_type("``\ncode\n``"), BlockType.PARAGRAPH)
+        self.assertEqual(block_to_block_type("```code\n```"), BlockType.PARAGRAPH)
+
+    def test_quote_block(self):
+        self.assertEqual(block_to_block_type("> Quote"), BlockType.QUOTE)
+        self.assertEqual(block_to_block_type(">Quote"), BlockType.QUOTE)
+        self.assertEqual(block_to_block_type("<Quote"), BlockType.PARAGRAPH)
+
+    def test_unordered_list_block(self):
+        self.assertEqual(block_to_block_type("- Item 1\n- Item 2"), BlockType.UNORDERED_LIST)
+        self.assertEqual(block_to_block_type("- Item 1\n-Item 2"), BlockType.PARAGRAPH)
+        self.assertEqual(block_to_block_type("* Item 1\n* Item 2"), BlockType.PARAGRAPH)
+
+    def test_ordered_list_block(self):
+        self.assertEqual(block_to_block_type("1. Item 1\n2. Item 2"), BlockType.ORDERED_LIST)
+        self.assertEqual(block_to_block_type("1> Item 1\n2> Item 2"), BlockType.PARAGRAPH)
+        self.assertEqual(block_to_block_type("1. Item 1\n3. Item 2\n2. Item 3"), BlockType.PARAGRAPH)
+
+    def test_paragraph_block(self):
+        self.assertEqual(block_to_block_type("This is a paragraph."), BlockType.PARAGRAPH)
 
 if __name__ == '__main__':
     unittest.main()
