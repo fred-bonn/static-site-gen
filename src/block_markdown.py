@@ -11,7 +11,7 @@ class BlockType(Enum):
     ORDERED_LIST = "ordered_list"
 
 def block_to_block_type(block: str):
-    if bool(re.match(r'^#{1,6} ', block)):
+    if bool(re.match(r'^#{1,6} ', block)) and "\n" not in block:
         return BlockType.HEADING
     elif block.startswith("```\n") and block.endswith("```"):
         return BlockType.CODE
