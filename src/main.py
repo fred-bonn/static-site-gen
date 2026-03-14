@@ -1,7 +1,9 @@
-from textnode import TextNode, TextType
+from static_copy import cp_replace_dir
+
+static_path = "./static"
+public_path = "./public"
 
 def main():
-    node = TextNode("Hello, World!", TextType.PLAIN, "www.example.come")
-    print(node)
+    cp_replace_dir(static_path, public_path)
 
 main()
