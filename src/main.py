@@ -1,9 +1,9 @@
-from static_copy import cp_replace_dir
+from static_copy import static_copy
 
 static_path = "./static"
 public_path = "./public"
 
 def main():
-    cp_replace_dir(static_path, public_path)
+    static_copy(static_path, public_path)
 
 main()
